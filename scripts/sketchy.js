@@ -1,3 +1,31 @@
+var Sketchy = window.sketchy || {}
+
+Sketchy.main = {
+
+	init: function() {
+		this.listen();
+		console.log(this);
+    alert('hello');
+    
+	},
+
+	_bindClickHandlers: function($el, target, action) {
+		var pointer = document.getElementByID('marker')
+	},
+
+	startSketch: function(x, y, callback) {
+
+	},
+
+
+}
+
+window.onload(function() {
+	Sketchy.main.init();
+});
+
+
+
 console.log('Put your app code here');
 
 var beams = getBeams();

@@ -8,3 +8,12 @@ body {
 	color: #fff;
 	font: 12px normal Arial, Helvetica, sans-serif;
 }
+
+.test {
+	background: #f00;
+}
+
+.test2 {
+	color: #0f0;
+	background: #00f;
+}
