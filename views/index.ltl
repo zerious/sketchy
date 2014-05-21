@@ -1,0 +1,8 @@
+// AUTOROUTE
+html
+  head
+    title Sketchy
+    link(rel="stylesheet" href="/all.css?={cacheBust}")
+  body
+    div Hello World
+    script(src="/all.js?={cacheBust}")

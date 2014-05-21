@@ -1,0 +1,10 @@
+body {
+	background: #000;
+}
+
+* {
+	margin: 0;
+	padding: 0;
+	color: #fff;
+	font: 12px normal Arial, Helvetica, sans-serif;
+}

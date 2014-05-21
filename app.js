@@ -1,0 +1,1 @@
+require('lighter')({env: 'dev'});
