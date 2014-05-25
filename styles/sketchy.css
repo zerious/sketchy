@@ -9,11 +9,12 @@ body {
 	font: 12px normal Arial, Helvetica, sans-serif;
 }
 
-.test {
-	background: #f00;
-}
-
-.test2 {
-	color: #0f0;
-	background: #00f;
+#sketcher {
+	position: absolute;
+	margin: 20px;
+	padding: 20px;
+	min-height: 300px;
+	background: #eee;
+	color: #44c;
+	font-size: 2em;
 }

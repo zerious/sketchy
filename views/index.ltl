@@ -4,7 +4,5 @@ html
     title Sketchy
     link(rel="stylesheet" href="/all.css?={cacheBust}")
   body
-    div Hello World
-    div.test
-    	div.test2 this is a test
+    div#sketcher hello
     script(src="/all.js?={cacheBust}")
