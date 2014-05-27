@@ -4,5 +4,8 @@ html
     title Sketchy
     link(rel="stylesheet" href="/all.css?={cacheBust}")
   body
+  	h3.centered Sketchy.js drawing area test?
     div#sketcher hello
+    div.controls 
+    	div.color
     script(src="/all.js?={cacheBust}")

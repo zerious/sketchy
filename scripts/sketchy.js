@@ -6,7 +6,8 @@ Sketchy.main = {
     var self = this;
 
     self.watchBoard(function(data) {
-      self.getJSON('test', data, self.drawLines);
+      self.drawLines(data)
+      // self.getJSON('test', data, self.drawLines);
     });
    
     self._bindClickHandlers('')
@@ -72,14 +73,15 @@ Sketchy.main = {
   },
 
   getJSON: function(url, data, callback) {
-    var request = new XMLHttpRequest();
-    request.onload = callback;
-    request.open('get',url,true);
-    request.send();
+    var XHR = new XMLHttpRequest();
+    XHR.onload = callback;
+    XHR.open('get',url,true);
+    XHR.send();
   },
 
   drawLines: function(data) {
     console.log(data);
+    console.log('drawings');
     // TO DO: draw some lines?
   },
 }

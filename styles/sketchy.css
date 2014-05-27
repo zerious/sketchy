@@ -9,12 +9,24 @@ body {
 	font: 12px normal Arial, Helvetica, sans-serif;
 }
 
+h3 {
+	font-size: 2.2em;
+}
+
+.centered {
+	text-align: center;
+}
+
 #sketcher {
-	position: absolute;
-	margin: 20px;
+	display: block;
+	position: relative;
+	margin: 20px auto;
 	padding: 20px;
 	min-height: 300px;
+	min-width: 60%;
+	max-width: 90%;
 	background: #eee;
 	color: #44c;
 	font-size: 2em;
 }
+
