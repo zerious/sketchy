@@ -1,3 +1,5 @@
+var beams = getBeams();
+
 var Sketchy = window.Sketchy || {}
 
 Sketchy.main = {
@@ -5,12 +7,7 @@ Sketchy.main = {
   init: function() {
     var self = this;
 
-    self.watchBoard(function(data) {
-      self.drawLines(data)
-      // self.getJSON('test', data, self.drawLines);
-    });
-   
-    self._bindClickHandlers('')
+    self.watchBoard(self.drawLines);   
 
   },
 
@@ -32,7 +29,7 @@ Sketchy.main = {
     return($el);
   },
 
-  _bindClickHandlers: function(selector, target, action, sketch) {
+  _bindClickHandlers: function(selector, target, action) {
     var $el = this.grab(selector);
 
     $el.onclick = function(e) {
@@ -47,21 +44,25 @@ Sketchy.main = {
 
     $board = this.grab('#sketcher');
     shim = {'x': $board.offsetLeft, 'y': $board.offsetTop }
-
+    console.log('yes');
     $board.onmousedown = function(e) {
       start = calcPosition(e);
       path = [];
+      beams.emit('startPath', start);
 
       $board.onmousemove = function(e) {
         var current = calcPosition(e);
         path.push(current);
+        beams.emit('movePath', current);
       }
     }
 
     $board.onmouseup = function(e) {
       end = calcPosition(e);
-
-      return callback({'start': start, 'path': path, 'end': end});
+      beams.emit('endPath', end);
+      return callback({'startPath': start, 
+                       'movePath': path, 
+                       'endPath': end});
     }
 
     calcPosition = function(e) {
@@ -72,16 +73,9 @@ Sketchy.main = {
     }
   },
 
-  getJSON: function(url, data, callback) {
-    var XHR = new XMLHttpRequest();
-    XHR.onload = callback;
-    XHR.open('get',url,true);
-    XHR.send();
-  },
-
   drawLines: function(data) {
     console.log(data);
-    console.log('drawings');
+    beams.emit('drawing', data)
     // TO DO: draw some lines?
   },
 }
@@ -89,7 +83,7 @@ Sketchy.main = {
 
 Sketchy.main.init();
 
-var beams = getBeams();
+
 
 // Use fractions of the draw area.
 beams.emit('startPath', {x: 0.6, y: 0.2});
