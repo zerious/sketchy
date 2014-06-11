@@ -1,11 +1,9 @@
-// AUTOROUTE
 html
   head
     title Sketchy
+    link(href="//fonts.googleapis.com/css?family=Shadows+Into+Light:400" rel="stylesheet" type="text/css")
     link(rel="stylesheet" href="/all.css?={cacheBust}")
   body
-  	h3.centered Sketchy.js drawing area test?
-    div#sketcher hello
-    div.controls 
-    	div.color
+    svg#_BOARD
+    h1 Sketchy
     script(src="/all.js?={cacheBust}")

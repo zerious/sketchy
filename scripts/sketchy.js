@@ -9,7 +9,7 @@ Sketchy.main = {
       self.drawLines(data)
       // self.getJSON('test', data, self.drawLines);
     });
-   
+
     self._bindClickHandlers('')
 
   },
@@ -17,7 +17,7 @@ Sketchy.main = {
   grab: function(selector) {
     var by = selector.slice(0,1);
     var name = selector.slice(1);
-    
+
     select = {
       '.': document.getElementsByClassName(name),
       '#': document.getElementById(name),
