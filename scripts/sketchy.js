@@ -1,7 +1,5 @@
-var beams = getBeams();
-
+var beams = Beams();
 var Sketchy = window.Sketchy || {}
-
 Sketchy.main = {
 
   init: function() {
@@ -41,24 +39,25 @@ Sketchy.main = {
   watchBoard: function(callback) {
     var $board,start,path,end,shim;
 
-    $board = this.grab('#sketcher');
+    $board = this.grab('#_BOARD');
     shim = {'x': $board.offsetLeft, 'y': $board.offsetTop }
-    console.log('yes');
-    $board.onmousedown = function(e) {
-      start = calcPosition(e);
+
+    bind($board, 'mousedown', function($el, event) {
+      start = calcPosition(event);
       path = [];
-      beams.emit('startPath', start);
+      // beams.emit('startPath', start);
 
       $board.onmousemove = function(e) {
         var current = calcPosition(e);
+
         path.push(current);
-        beams.emit('movePath', current);
+        // beams.emit('movePath', current);
       }
-    }
+    });
 
     $board.onmouseup = function(e) {
       end = calcPosition(e);
-      beams.emit('endPath', end);
+      // beams.emit('endPath', end);
       return callback({'startPath': start, 
                        'movePath': path, 
                        'endPath': end});
@@ -67,6 +66,9 @@ Sketchy.main = {
     calcPosition = function(e) {
       var x = e.clientX
       var y = e.clientY
+
+      var winWidth = window.innerWidth;
+      var winHeight = window.innerHeight;
 
       return {'x': x - shim.x, 'y': y - shim.y }
     }
@@ -80,7 +82,6 @@ Sketchy.main = {
 }
 
 Sketchy.main.init();
-
 
 // Use fractions of the draw area.
 beams.emit('startPath', {x: 0.6, y: 0.2});
