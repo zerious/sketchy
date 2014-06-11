@@ -7,9 +7,7 @@ Sketchy.main = {
   init: function() {
     var self = this;
 
-    self.watchBoard(self.drawLines);   
-
-
+    self.watchBoard(self.drawLines);
   },
 
   grab: function(selector) {
@@ -81,9 +79,7 @@ Sketchy.main = {
   },
 }
 
-
 Sketchy.main.init();
-
 
 
 // Use fractions of the draw area.
