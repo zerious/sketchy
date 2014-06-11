@@ -9,12 +9,13 @@ Sketchy.main = {
 
     self.watchBoard(self.drawLines);   
 
+
   },
 
   grab: function(selector) {
     var by = selector.slice(0,1);
     var name = selector.slice(1);
-    
+
     select = {
       '.': document.getElementsByClassName(name),
       '#': document.getElementById(name),
