@@ -124,5 +124,3 @@ bind(board, 'mousemove touchmove', function (element, event) {
 });
 
 bind(board, 'mouseup touchend', endPath);
-
-trigger(window, 'resize');
