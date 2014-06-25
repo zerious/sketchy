@@ -1,11 +1,14 @@
-var app = require('lighter')({
-  env: 'dev',
+require('lighter')({
   httpPort: 8222,
-  scripts: {
-    "/all.js": [
-      'node_modules/lighter/node_modules/jymin/jymin.js',
-      'node_modules/lighter/node_modules/beams/beams-client.js',
-      'scripts'
-    ]
-  }
+  dbs: {
+    sketchy: {
+      user: 'root',
+      name: 'sketchy'
+    }
+  },
+  enableCluster: false
+});
+
+app.work(function () {
+  require('./lib/pubsub.js');
 });
