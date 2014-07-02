@@ -1,89 +1,130 @@
+
+var board = getElement('_BOARD');
 var beams = Beams();
-var Sketchy = window.Sketchy || {}
-Sketchy.main = {
 
-  init: function() {
-    var self = this;
+var resolution = 1e4;
+var strokeWidth = 100;
+var currentPath = null;
+var currentCoords = [0, 0];
+var currentId = 0;
+var sketchId = location.href.split('?')[1];
+var paths = {};
+var commandPattern = /([Ml])(-?\d+),?(-?\d+)/g;
 
-    self.watchBoard(self.drawLines);
-  },
+// Subscribe to this sketch.
+beams._EMIT('s', {s: sketchId});
 
-  grab: function(selector) {
-    var by = selector.slice(0,1);
-    var name = selector.slice(1);
-
-    select = {
-      '.': document.getElementsByClassName(name),
-      '#': document.getElementById(name),
-    }
-
-    $el = select[by];
-
-    if (!$el) {
-      $el = document.getElementsByTagName(selector)
-    }
-
-    return($el);
-  },
-
-  _bindClickHandlers: function(selector, target, action) {
-    var $el = this.grab(selector);
-
-    $el.onclick = function(e) {
-      e.preventDefault();
-      e.stopPropagation();
-      action(this);
-    };
-  },
-
-  watchBoard: function(callback) {
-    var $board,start,path,end,shim;
-
-    $board = this.grab('#_BOARD');
-    shim = {'x': $board.offsetLeft, 'y': $board.offsetTop }
-
-    bind($board, 'mousedown', function($el, event) {
-      start = calcPosition(event);
-      path = [];
-      // beams.emit('startPath', start);
-
-      $board.onmousemove = function(e) {
-        var current = calcPosition(e);
-
-        path.push(current);
-        // beams.emit('movePath', current);
-      }
+// Initialize the paths in the sketch.
+beams._ON('i', function (paths) {
+  forEach(paths, function (path) {
+    var element = createPath(path.id);
+    path.data.replace(commandPattern, function (match, command, x, y) {
+      addData(element, command, x, y);
     });
+  });
+});
 
-    $board.onmouseup = function(e) {
-      end = calcPosition(e);
-      // beams.emit('endPath', end);
-      return callback({'startPath': start, 
-                       'movePath': path, 
-                       'endPath': end});
-    }
+// Receive data.
+beams._ON('d', function (data) {
+  var p = 'p' + data.p;
+  var path = paths[p];
+  if (!path) {
+    path = paths[p] = createPath(p);
+  }
+  data.d.replace(commandPattern, function (match, command, x, y) {
+    addData(path, command, x, y);
+  });
+});
 
-    calcPosition = function(e) {
-      var x = e.clientX
-      var y = e.clientY
+var createPath = function (id) {
+  // TODO: Add createElementNS to Jymin.
+  var path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+  path.id = id || ('pOwn' + (currentId++));
+  setAttribute(path, 'stroke', 'blue');
+  setAttribute(path, 'fill', 'none');
+  setAttribute(path, 'stroke-width', strokeWidth);
+  setAttribute(path, 'stroke-linejoin', 'round');
+  setAttribute(path, 'stroke-linecap', 'round');
+  appendElement(board, path);
+  return path;
+};
 
-      var winWidth = window.innerWidth;
-      var winHeight = window.innerHeight;
+var addData = function (path, command, x, y) {
+  var segList = path.pathSegList;
+  var seg;
+  if (command == 'M') {
+    seg = path.createSVGPathSegMovetoAbs(x, y);
+  }
+  else if (command == 'l') {
+    seg = path.createSVGPathSegLinetoRel(x, y);
+  }
+  if (seg) {
+    segList.appendItem(seg);
+  }
+  // If it's our own path, send it to the server.
+  if (startsWith(path.id, 'pOwn')) {
+    var coords = '' + x + (y < 0 ? y : ',' + y);
+    beams._EMIT('d', {s: sketchId, d: command + coords});
+  }
+};
 
-      return {'x': x - shim.x, 'y': y - shim.y }
-    }
-  },
+var getDimensions = function () {
+  var w = board.offsetWidth;
+  var h = board.offsetHeight;
+  var min = Math.min(w, h);
+  var max = Math.max(w, h);
+  return [w, h, min, Math.round((max - min) / 2)];
+};
 
-  drawLines: function(data) {
-    console.log(data);
-    beams.emit('drawing', data)
-    // TO DO: draw some lines?
-  },
-}
+var getCoords = function (event) {
+  var x = event.x;
+  var y = event.y;
+  if (event.touches && event.touches.length) {
+    x = event.touches[0].clientX;
+    y = event.touches[0].clientY;
+  }
+  var d = getDimensions();
+  var w = d[0];
+  var h = d[1];
+  var l = d[2]; // Length of a side.
+  var p = w < h;
+  x -= p ? 0 : d[3];
+  y -= p ? d[3] : 0;
+  x = Math.round(x / l * resolution);
+  y = Math.round(y / l * resolution);
+  return [x, y];
+};
 
-Sketchy.main.init();
+var endPath = function () {
+  if (currentPath) {
+    currentPath = 0;
+    currentCoords = [0, 0];
+  }
+};
 
-// Use fractions of the draw area.
-beams.emit('startPath', {x: 0.6, y: 0.2});
-beams.emit('movePath', {x: -0.2, y: 0.2});
-beams.emit('endPath', {x: -0.2, y: 0.2});
+bind(board, 'mousedown touchstart', function (element, event) {
+  endPath();
+  var coords = getCoords(event);
+  var x = coords[0];
+  var y = coords[1];
+  currentPath = createPath();
+  addData(currentPath, 'M', x, y);
+  currentCoords = coords;
+  preventDefault(event);
+});
+
+bind(board, 'mousemove touchmove', function (element, event) {
+  if (currentPath) {
+    currentCoords = currentCoords || [0, 0];
+    var coords = getCoords(event);
+    var x = coords[0] - currentCoords[0];
+    var y = coords[1] - currentCoords[1];
+    addData(currentPath, 'l', x, y);
+    currentCoords = coords;
+  }
+});
+
+bind(board, 'mouseup touchend', endPath);
+
+trigger(window, 'resize');
+>>>>>>> 59cfe11bb906ea497795be601b669303b13a04a1
