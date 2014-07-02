@@ -24,7 +24,7 @@ beams._ON('i', function (paths) {
   });
 });
 
-// Receive data.
+//  data.
 beams._ON('d', function (data) {
   var p = 'p' + data.p;
   var path = paths[p];
@@ -127,4 +127,3 @@ bind(board, 'mousemove touchmove', function (element, event) {
 bind(board, 'mouseup touchend', endPath);
 
 trigger(window, 'resize');
->>>>>>> 59cfe11bb906ea497795be601b669303b13a04a1
