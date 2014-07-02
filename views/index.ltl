@@ -3,6 +3,7 @@ html
     title Sketchy
     link(href="//fonts.googleapis.com/css?family=Shadows+Into+Light:400" rel="stylesheet" type="text/css")
     link(rel="stylesheet" href="/a.css?={cacheBust}")
+    meta(name="viewport" content="width=device-width,user-scalable=no")
   body
     svg#_BOARD(viewBox="0 0 10000 10000")
     h1 Sketchy
