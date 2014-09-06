@@ -4,6 +4,7 @@ require('lighter')({
   dbs: {
     sketchy: {
       user: 'root',
+      pass: 'pass',
       name: 'sketchy'
     }
   },

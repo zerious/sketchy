@@ -64,3 +64,13 @@ h1 {
 }
 
 
+@media (max-width: 700px) {
+  #_CONTROLS {
+    position: absolute;
+    top: 2px;
+    left: 6%;
+    height: 57px;
+    width: 80%;
+
+  }
+}
